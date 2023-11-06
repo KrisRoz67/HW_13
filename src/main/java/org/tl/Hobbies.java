@@ -4,10 +4,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class Hobbies {
-
 
     /**
      * Collect lines from the given file into a list.
@@ -23,7 +21,9 @@ public class Hobbies {
 
             while (scanner.hasNextLine()) {
                 String s = scanner.nextLine();
-                listOfData.add(s);
+                if (!listOfData.contains(s)) {
+                    listOfData.add(s);
+                }
             }
         } catch (FileNotFoundException e) {
             System.out.println("Error occured " + e.getMessage());
@@ -39,7 +39,7 @@ public class Hobbies {
      */
     public Map<String, Set<String>> createDictionary(String filePath) {
         Map<String, Set<String>> map = new HashMap<>();
-        List<String> list = createListFromFile(filePath);
+       List<String> list = createListFromFile(filePath);
         Set<String> userHobbies = new HashSet<>();
         for (String data : list) {
             List<String> lineToList = stringToList(data);
@@ -70,14 +70,11 @@ public class Hobbies {
      */
     public List<String> findPersonWithMostHobbies(String filePath) {
         Map<String, Set<String>> map = createDictionary(filePath);
-        List<Integer> qty = map.entrySet().stream().map(value ->
-                value.getValue().size()).toList();
-        List<String> listOdPersonsWithMostHobbies = new ArrayList<>();
+        List<Integer> qty = map.values().stream().map(Set::size).toList();
         int maxNumber = Collections.max(qty);
-        listOdPersonsWithMostHobbies = map.entrySet().stream()
+        return  map.entrySet().stream()
                 .filter(name -> name.getValue().size() == (maxNumber))
                 .map(Map.Entry::getKey).toList();
-        return listOdPersonsWithMostHobbies;
     }
 
     /**
@@ -88,14 +85,12 @@ public class Hobbies {
      */
     public List<String> findPersonWithLeastHobbies(String filePath) {
         Map<String, Set<String>> map = createDictionary(filePath);
-        List<Integer> qty = map.entrySet().stream().map(value ->
-                value.getValue().size()).toList();
-        List<String> listOfPersonsWithLeastHobbies = new ArrayList<>();
+        List<Integer> qty = map.values().stream().map(Set::size).toList();
         int minNumber = Collections.min(qty);
-        listOfPersonsWithLeastHobbies = map.entrySet().stream()
+        return map.entrySet().stream()
                 .filter(name -> name.getValue().size() == (minNumber))
                 .map(Map.Entry::getKey).toList();
-        return listOfPersonsWithLeastHobbies;
+
     }
 
 
@@ -106,14 +101,12 @@ public class Hobbies {
      * @return The most popular hobby.
      */
     public List<String> findMostPopularHobby(String filePath) {
-        Map<String, Integer> countHobbies = countTheHobbis(filePath);
-        List<String> listOfMostPopularHobby = new ArrayList<>();
-        int finalMaxNumber = Collections.max(countHobbies.entrySet().stream()
-                .map(Map.Entry::getValue).toList());
-        listOfMostPopularHobby = countHobbies.entrySet().stream()
+        Map<String, Integer> countHobbies = countTheHobbies(filePath);
+        int finalMaxNumber = Collections.max(countHobbies.values().stream().toList());
+        return countHobbies.entrySet().stream()
                 .filter(counter -> counter.getValue() == finalMaxNumber)
                 .map(Map.Entry::getKey).toList();
-        return listOfMostPopularHobby;
+
     }
 
     /**
@@ -123,14 +116,11 @@ public class Hobbies {
      * @return The least popular hobby.
      */
     public List<String> findLeastPopularHobby(String filePath) {
-        Map<String, Integer> countHobbies = countTheHobbis(filePath);
-        List<String> listOfLeastPopularHobby = new ArrayList<>();
-        int finalMinNumber = Collections.min(countHobbies.entrySet().stream()
-                .map(Map.Entry::getValue).toList());
-        listOfLeastPopularHobby = countHobbies.entrySet().stream()
+        Map<String, Integer> countHobbies = countTheHobbies(filePath);
+        int finalMinNumber = Collections.min(countHobbies.values().stream().toList());
+        return countHobbies.entrySet().stream()
                 .filter(counter -> counter.getValue() == finalMinNumber)
                 .map(Map.Entry::getKey).toList();
-        return listOfLeastPopularHobby;
     }
 
     /**
@@ -147,28 +137,27 @@ public class Hobbies {
      * @param fileToWrite Path to the new file with correct data
      */
     public void writeCorrectedDatabase(String filePath, String fileToWrite) {
-        Map<String,Set<String>> map = createDictionary(filePath);
-       try{
-           FileWriter writer  = new FileWriter(fileToWrite);
-           writer.write("<p>\n"+"Name,Hobbies");
-           for (Map.Entry<String ,Set <String>> entry : map.entrySet()) {
-               String name = "\n" + entry.getKey() + ",";
-               List<String> hobbiesList = entry.getValue().stream().sorted().toList();
-               String hobby = hobbiesList.get(0).toLowerCase();
-               if (hobbiesList.size() > 1) {
-                   for (int i = 1; i < hobbiesList.size(); i++) {
-                       hobby = hobby + "-" + hobbiesList.get(i).toLowerCase();
-                   }
-               }
-               writer.write(name + hobby);
-           }
-           writer.write("\n<p>");
-           writer.close();
+        Map<String, Set<String>> map = createDictionary(filePath);
+        try {
+            FileWriter writer = new FileWriter(fileToWrite);
+            writer.write("<p>\n" + "Name,Hobbies");
+            for (Map.Entry<String, Set<String>> entry : map.entrySet()) {
+                String name = "\n" + entry.getKey() + ",";
+                List<String> hobbiesList = entry.getValue().stream().sorted().toList();
+                String hobby = hobbiesList.get(0).toLowerCase();
+                if (hobbiesList.size() > 1) {
+                    for (int i = 1; i < hobbiesList.size(); i++) {
+                        hobby = hobby + "-" + hobbiesList.get(i).toLowerCase();
+                    }
+                }
+                writer.write(name + hobby);
+            }
+            writer.write("\n<p>");
+            writer.close();
 
-       }catch (Exception e){
-           System.out.println("Error occured " +e.getMessage() );
-       }
-
+        } catch (Exception e) {
+            System.out.println("Error occured " + e.getMessage());
+        }
 
 
     }
@@ -179,7 +168,7 @@ public class Hobbies {
 
     }
 
-    public Map<String, Integer> countTheHobbis(String filePath) {
+    public Map<String, Integer> countTheHobbies(String filePath) {
         List<String> listFromFile = createListFromFile(filePath);
         List<String> hobbies = listFromFile.stream().map(hobby -> stringToList(hobby).get(1)).toList();
         Map<String, Integer> countHobbies = new HashMap<>();
