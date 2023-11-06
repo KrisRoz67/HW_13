@@ -39,7 +39,7 @@ public class Hobbies {
      */
     public Map<String, Set<String>> createDictionary(String filePath) {
         Map<String, Set<String>> map = new HashMap<>();
-       List<String> list = createListFromFile(filePath);
+        List<String> list = createListFromFile(filePath);
         Set<String> userHobbies = new HashSet<>();
         for (String data : list) {
             List<String> lineToList = stringToList(data);
@@ -72,7 +72,7 @@ public class Hobbies {
         Map<String, Set<String>> map = createDictionary(filePath);
         List<Integer> qty = map.values().stream().map(Set::size).toList();
         int maxNumber = Collections.max(qty);
-        return  map.entrySet().stream()
+        return map.entrySet().stream()
                 .filter(name -> name.getValue().size() == (maxNumber))
                 .map(Map.Entry::getKey).toList();
     }
