@@ -32,6 +32,7 @@ class HobbiesTest {
     void createDictionary() {
         Map<String, Set<String>> actual = hobbies.createDictionary(testFilePath);
         Map<String, Set<String>> expected = Map.of("Olivia", Set.of("Chess", "Cooking", "Hiking"));
+        System.out.println(actual);
         assertEquals(actual.get("Olivia"), expected.get("Olivia"));
     }
 
