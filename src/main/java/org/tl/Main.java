@@ -24,7 +24,7 @@ public class Main {
         System.out.println("--------Print persons with least hobbies------");
         System.out.println(findPersonWithLeastHobbies);
         final List<String> listOfMostPopularHobby = hobbies.
-              findMostPopularHobby("src/main/resources/hobbies.txt");
+                findMostPopularHobby("src/main/resources/hobbies.txt");
         System.out.println("--------Print most popular hobbies------");
         System.out.println(listOfMostPopularHobby);
         System.out.println("--------Print least popular hobbies------");
